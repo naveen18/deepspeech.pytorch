@@ -58,7 +58,7 @@ def decode_results(model, decoded_output, decoded_offsets):
 
     for b in range(len(decoded_output)):
         for pi in range(min(args.top_paths, len(decoded_output[b]))):
-            result = {'transcription': decoded_output[b][pi]}
+            result = decoded_output[b][pi]
             if args.offsets:
                 result['offsets'] = decoded_offsets[b][pi]
             results['output'].append(result)
@@ -88,4 +88,11 @@ if __name__ == '__main__':
     out = model(Variable(spect, volatile=True))
     out = out.transpose(0, 1)  # TxNxH
     decoded_output, decoded_offsets = decoder.decode(out.data)
-    print(json.dumps(decode_results(model, decoded_output, decoded_offsets)))
+    results = decode_results(model, decoded_output, decoded_offsets)
+    res = ""
+    results = results['output']
+    #print(type(results))
+    for c in results:
+        res = res + c
+    print(res)
+    #print(json.dumps(decode_results(model, decoded_output, decoded_offsets)))
